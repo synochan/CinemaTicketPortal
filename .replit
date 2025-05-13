@@ -1,0 +1,39 @@
+modules = ["java"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "JavaCinebookApp"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "java_app"
+
+[[workflows.workflow]]
+name = "JavaCinebookApp"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && java -cp CineBookCDO/bin Main"
+
+[[workflows.workflow]]
+name = "java_app"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "java -cp CineBookCDO/src Main"
+
+[deployment]
+run = ["sh", "-c", "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && java -cp CineBookCDO/bin Main"]
