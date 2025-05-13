@@ -1,191 +1,147 @@
 package controller;
 
-import model.*;
+import model.Movie;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller class for booking-related operations
  */
 public class BookingController {
-    private List<Booking> bookings;
-    private List<Snack> availableSnacks;
     private MovieController movieController;
-
+    private Map<Integer, List<String>> bookedSeats; // Map<showingId, List<seatId>>
+    
     public BookingController(MovieController movieController) {
-        this.bookings = new ArrayList<>();
-        this.availableSnacks = new ArrayList<>();
         this.movieController = movieController;
-        initializeSnacks();
+        this.bookedSeats = new HashMap<>();
     }
-
+    
     /**
-     * Initializes available snacks
+     * Gets available seats for a specific movie showing
      */
-    private void initializeSnacks() {
-        // Add popcorn options
-        availableSnacks.add(new Snack("Small Popcorn", "Popcorn", 70.0, "Small buttered popcorn"));
-        availableSnacks.add(new Snack("Medium Popcorn", "Popcorn", 120.0, "Medium buttered popcorn"));
-        availableSnacks.add(new Snack("Large Popcorn", "Popcorn", 160.0, "Large buttered popcorn"));
-        availableSnacks.add(new Snack("Caramel Popcorn", "Popcorn", 140.0, "Sweet caramel coated popcorn"));
+    public List<String> getAvailableSeats(int movieId, LocalDateTime showtime) {
+        int showingId = generateShowingId(movieId, showtime);
+        List<String> allSeats = generateAllSeats();
+        List<String> booked = bookedSeats.getOrDefault(showingId, new ArrayList<>());
         
-        // Add drink options
-        availableSnacks.add(new Snack("Small Soda", "Drink", 50.0, "Small fountain soda"));
-        availableSnacks.add(new Snack("Medium Soda", "Drink", 80.0, "Medium fountain soda"));
-        availableSnacks.add(new Snack("Large Soda", "Drink", 100.0, "Large fountain soda"));
-        availableSnacks.add(new Snack("Bottled Water", "Drink", 40.0, "500ml bottled water"));
+        List<String> available = new ArrayList<>(allSeats);
+        available.removeAll(booked);
         
-        // Add combo options
-        availableSnacks.add(new Snack("Popcorn & Soda Combo", "Combo", 180.0, "Medium popcorn with medium soda"));
-        availableSnacks.add(new Snack("Family Combo", "Combo", 350.0, "Large popcorn with 2 large sodas"));
-        availableSnacks.add(new Snack("Snack Platter", "Combo", 250.0, "Medium popcorn, nachos and medium soda"));
+        return available;
     }
-
+    
     /**
-     * Creates a new booking
+     * Books seats for a movie showing
      */
-    public Booking createBooking(String username, Movie movie, String cinema, String showtime) {
-        Booking booking = new Booking(username, movie, cinema, showtime);
-        return booking;
-    }
-
-    /**
-     * Adds seats to a booking
-     */
-    public void addSeatsToBooking(Booking booking, List<Seat> seats) {
-        for (Seat seat : seats) {
-            booking.addSeat(seat);
-            movieController.bookSeat(booking.getCinema(), booking.getMovie().getTitle(), booking.getShowtime(), seat.getSeatId());
-        }
-    }
-
-    /**
-     * Adds snacks to a booking
-     */
-    public void addSnacksToBooking(Booking booking, List<Snack> snacks) {
-        for (Snack snack : snacks) {
-            booking.addSnack(snack);
-        }
-    }
-
-    /**
-     * Completes a booking with payment
-     */
-    public void completeBooking(Booking booking, String paymentMethod) {
-        booking.setPaymentMethod(paymentMethod);
-        bookings.add(booking);
-    }
-
-    /**
-     * Cancels a booking and releases seats
-     */
-    public void cancelBooking(Booking booking) {
-        for (Seat seat : booking.getBookedSeats()) {
-            movieController.releaseSeat(booking.getCinema(), booking.getMovie().getTitle(), booking.getShowtime(), seat.getSeatId());
-        }
-        bookings.remove(booking);
-    }
-
-    /**
-     * Gets all completed bookings
-     */
-    public List<Booking> getAllBookings() {
-        return new ArrayList<>(bookings);
-    }
-
-    /**
-     * Gets bookings for a specific movie
-     */
-    public List<Booking> getBookingsByMovie(String movieTitle) {
-        List<Booking> movieBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            if (booking.getMovie().getTitle().equals(movieTitle)) {
-                movieBookings.add(booking);
-            }
-        }
-        return movieBookings;
-    }
-
-    /**
-     * Gets bookings for a specific cinema
-     */
-    public List<Booking> getBookingsByCinema(String cinemaName) {
-        List<Booking> cinemaBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            if (booking.getCinema().equals(cinemaName)) {
-                cinemaBookings.add(booking);
-            }
-        }
-        return cinemaBookings;
-    }
-
-    /**
-     * Gets bookings for a specific user
-     */
-    public List<Booking> getBookingsByUser(String username) {
-        List<Booking> userBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            if (booking.getUsername().equals(username)) {
-                userBookings.add(booking);
-            }
-        }
-        return userBookings;
-    }
-
-    /**
-     * Gets all available snacks
-     */
-    public List<Snack> getAvailableSnacks() {
-        return new ArrayList<>(availableSnacks);
-    }
-
-    /**
-     * Gets snacks by category
-     */
-    public List<Snack> getSnacksByCategory(String category) {
-        List<Snack> categorySnacks = new ArrayList<>();
-        for (Snack snack : availableSnacks) {
-            if (snack.getCategory().equals(category)) {
-                categorySnacks.add(snack);
-            }
-        }
-        return categorySnacks;
-    }
-
-    /**
-     * Adds a new snack to available snacks
-     */
-    public void addSnack(Snack snack) {
-        availableSnacks.add(snack);
-    }
-
-    /**
-     * Removes a snack from available snacks
-     */
-    public void removeSnack(int snackId) {
-        Snack snackToRemove = null;
-        for (Snack snack : availableSnacks) {
-            if (snack.getId() == snackId) {
-                snackToRemove = snack;
-                break;
+    public boolean bookSeats(int movieId, LocalDateTime showtime, List<String> seats) {
+        int showingId = generateShowingId(movieId, showtime);
+        
+        // Get currently booked seats
+        List<String> booked = bookedSeats.getOrDefault(showingId, new ArrayList<>());
+        
+        // Check if any requested seats are already booked
+        for (String seat : seats) {
+            if (booked.contains(seat)) {
+                return false; // Seat already booked
             }
         }
         
-        if (snackToRemove != null) {
-            availableSnacks.remove(snackToRemove);
-        }
+        // Book the seats
+        booked.addAll(seats);
+        bookedSeats.put(showingId, booked);
+        
+        return true;
     }
-
+    
     /**
-     * Gets a snack by ID
+     * Cancels a booking
      */
-    public Snack getSnackById(int id) {
-        for (Snack snack : availableSnacks) {
-            if (snack.getId() == id) {
-                return snack;
+    public boolean cancelBooking(int movieId, LocalDateTime showtime, List<String> seats) {
+        int showingId = generateShowingId(movieId, showtime);
+        
+        if (!bookedSeats.containsKey(showingId)) {
+            return false;
+        }
+        
+        List<String> booked = bookedSeats.get(showingId);
+        return booked.removeAll(seats);
+    }
+    
+    /**
+     * Checks if seats are available
+     */
+    public boolean areSeatsAvailable(int movieId, LocalDateTime showtime, List<String> seats) {
+        int showingId = generateShowingId(movieId, showtime);
+        List<String> booked = bookedSeats.getOrDefault(showingId, new ArrayList<>());
+        
+        for (String seat : seats) {
+            if (booked.contains(seat)) {
+                return false; // At least one seat is already booked
             }
         }
-        return null;
+        
+        return true;
+    }
+    
+    /**
+     * Gets booked seats count for a movie showing
+     */
+    public int getBookedSeatsCount(int movieId, LocalDateTime showtime) {
+        int showingId = generateShowingId(movieId, showtime);
+        return bookedSeats.getOrDefault(showingId, new ArrayList<>()).size();
+    }
+    
+    /**
+     * Gets total seats count
+     */
+    public int getTotalSeatsCount() {
+        return generateAllSeats().size();
+    }
+    
+    /**
+     * Gets occupancy percentage for a movie showing
+     */
+    public double getOccupancyPercentage(int movieId, LocalDateTime showtime) {
+        int booked = getBookedSeatsCount(movieId, showtime);
+        int total = getTotalSeatsCount();
+        
+        return (double) booked / total * 100;
+    }
+    
+    /**
+     * Generates a unique identifier for a movie showing
+     */
+    private int generateShowingId(int movieId, LocalDateTime showtime) {
+        return movieId * 1000000 + 
+               showtime.getYear() * 10000 + 
+               showtime.getMonthValue() * 100 + 
+               showtime.getDayOfMonth();
+    }
+    
+    /**
+     * Generates all possible seats (e.g., A1, A2, B1, B2, etc.)
+     */
+    private List<String> generateAllSeats() {
+        List<String> seats = new ArrayList<>();
+        
+        // Generate standard seats (rows A-F, columns 1-10)
+        for (char row = 'A'; row <= 'F'; row++) {
+            for (int col = 1; col <= 10; col++) {
+                seats.add(row + String.valueOf(col));
+            }
+        }
+        
+        // Generate deluxe seats (rows G-J, columns 1-10)
+        for (char row = 'G'; row <= 'J'; row++) {
+            for (int col = 1; col <= 10; col++) {
+                seats.add(row + String.valueOf(col));
+            }
+        }
+        
+        return seats;
     }
 }

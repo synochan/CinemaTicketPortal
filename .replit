@@ -1,4 +1,4 @@
-modules = ["java"]
+modules = ["java", "java-17"]
 
 [nix]
 channel = "stable-24_05"
@@ -25,7 +25,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && java -cp CineBookCDO/bin Main"
+args = "mkdir -p CineBookCDO/bin && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/java -cp CineBookCDO/bin Main"
 
 [[workflows.workflow]]
 name = "java_app"
@@ -36,4 +36,4 @@ task = "shell.exec"
 args = "java -cp CineBookCDO/src Main"
 
 [deployment]
-run = ["sh", "-c", "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && java -cp CineBookCDO/bin Main"]
+run = ["sh", "-c", "mkdir -p CineBookCDO/bin && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/java -cp CineBookCDO/bin Main"]

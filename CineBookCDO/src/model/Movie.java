@@ -1,119 +1,147 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a movie in the cinema booking system
+ * Represents a movie in the system
  */
 public class Movie {
     private int id;
     private String title;
     private String description;
     private String genre;
-    private int duration; // in minutes
-    private String posterPath;
-    private List<String> showtimes;
-    private List<String> cinemas;
-    private static int nextId = 1;
-
-    public Movie(String title, String cinema, String showtime) {
-        this.id = nextId++;
-        this.title = title;
-        this.description = "Description for " + title;
-        this.genre = "General";
-        this.duration = 120;
-        this.posterPath = "default_poster.png";
-        this.showtimes = new ArrayList<>();
-        this.showtimes.add(showtime);
-        this.cinemas = new ArrayList<>();
-        this.cinemas.add(cinema);
-    }
-
-    public Movie(int id, String title, String description, String genre, int duration, String posterPath) {
+    private int durationMinutes;
+    private String director;
+    private String cast;
+    private String poster;  // URL to poster image
+    private String trailer; // URL to trailer
+    private String rating;  // PG, PG-13, R, etc.
+    private List<LocalDateTime> showtimes;
+    
+    public Movie(int id, String title, String description, String genre, int durationMinutes) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.genre = genre;
-        this.duration = duration;
-        this.posterPath = posterPath;
+        this.durationMinutes = durationMinutes;
         this.showtimes = new ArrayList<>();
-        this.cinemas = new ArrayList<>();
     }
-
+    
+    // Constructor with all fields
+    public Movie(int id, String title, String description, String genre, int durationMinutes,
+                String director, String cast, String poster, String trailer, String rating) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.genre = genre;
+        this.durationMinutes = durationMinutes;
+        this.director = director;
+        this.cast = cast;
+        this.poster = poster;
+        this.trailer = trailer;
+        this.rating = rating;
+        this.showtimes = new ArrayList<>();
+    }
+    
     // Getters and setters
     public int getId() {
         return id;
     }
-
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getTitle() {
         return title;
     }
-
+    
     public void setTitle(String title) {
         this.title = title;
     }
-
+    
     public String getDescription() {
         return description;
     }
-
+    
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     public String getGenre() {
         return genre;
     }
-
+    
     public void setGenre(String genre) {
         this.genre = genre;
     }
-
-    public int getDuration() {
-        return duration;
+    
+    public int getDurationMinutes() {
+        return durationMinutes;
     }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
+    
+    public void setDurationMinutes(int durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
-
-    public String getPosterPath() {
-        return posterPath;
+    
+    public String getDirector() {
+        return director;
     }
-
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    
+    public void setDirector(String director) {
+        this.director = director;
     }
-
-    public List<String> getShowtimes() {
+    
+    public String getCast() {
+        return cast;
+    }
+    
+    public void setCast(String cast) {
+        this.cast = cast;
+    }
+    
+    public String getPoster() {
+        return poster;
+    }
+    
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+    
+    public String getTrailer() {
+        return trailer;
+    }
+    
+    public void setTrailer(String trailer) {
+        this.trailer = trailer;
+    }
+    
+    public String getRating() {
+        return rating;
+    }
+    
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+    
+    public List<LocalDateTime> getShowtimes() {
         return showtimes;
     }
-
-    public void addShowtime(String showtime) {
-        if (!showtimes.contains(showtime)) {
-            showtimes.add(showtime);
-        }
+    
+    public void setShowtimes(List<LocalDateTime> showtimes) {
+        this.showtimes = showtimes;
     }
-
-    public void removeShowtime(String showtime) {
-        showtimes.remove(showtime);
+    
+    public void addShowtime(LocalDateTime showtime) {
+        this.showtimes.add(showtime);
     }
-
-    public List<String> getCinemas() {
-        return cinemas;
+    
+    public void removeShowtime(LocalDateTime showtime) {
+        this.showtimes.remove(showtime);
     }
-
-    public void addCinema(String cinema) {
-        if (!cinemas.contains(cinema)) {
-            cinemas.add(cinema);
-        }
-    }
-
-    public void removeCinema(String cinema) {
-        cinemas.remove(cinema);
-    }
-
+    
     @Override
     public String toString() {
         return title;
