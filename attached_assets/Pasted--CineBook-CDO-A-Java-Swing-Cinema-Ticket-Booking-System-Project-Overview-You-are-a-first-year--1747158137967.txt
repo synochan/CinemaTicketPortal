@@ -1,0 +1,83 @@
+📽️ CineBook CDO – A Java Swing Cinema Ticket Booking System
+Project Overview:
+You are a first-year computer science student tasked with building a basic but fully functional Java Swing desktop application called CineBook CDO, an online movie ticket booking system for cinemas in Cagayan de Oro (CDO), Philippines.
+
+This version is simplified for learning purposes and does not use a database. Instead, arrays and simple Java collections (like ArrayList) are used to store data in memory.
+
+✅ Functional Requirements:
+👤 User Side (Customer):
+Basic account simulation (username only, no login system).
+
+Browse movies showing across 3 cinemas.
+
+View schedule and showtimes for each movie.
+
+Select seats (Standard or Deluxe) using a visual-like UI (console/Swing-based).
+
+Add snacks (popcorn, drinks).
+
+Simulate payment options (GCash, PayMaya, Credit Card – just simulate with console messages).
+
+After booking, display a "digital ticket" in a pop-up or message box (with simulated QR code message).
+
+🔐 Admin Side:
+Admin login with a hardcoded username/password.
+
+Add/edit movie listings and schedules.
+
+View basic reports: number of tickets sold per movie or cinema.
+
+Manage available seats manually.
+
+Export simulated report to a .txt file (or display in console).
+
+🧱 Technologies & Tools:
+Java Swing (GUI)
+
+Java Arrays / ArrayList (for storing movies, seats, and users)
+
+No Database – this is a learning project, data resets each run
+
+JavaMail simulation: Print to console for "email" sending
+
+PDF/CSV Simulation: Export data to .txt files if needed
+
+📂 Folder Structure (MVC-based for simplicity):
+graphql
+Copy
+Edit
+/CineBookCDO/
+├── src/
+│   ├── model/          # Data structures (e.g., Movie, Seat, Booking)
+│   ├── view/           # GUI code (Swing forms, dialogs)
+│   ├── controller/     # Logic (handling booking, admin actions)
+│   └── Main.java       # Main entry point
+├── assets/             # Icons, logos
+├── docs/               # README, instructions
+└── lib/                # External JARs if needed
+🗃️ Sample Data (in code using arrays):
+java
+Copy
+Edit
+Movie[] movies = {
+    new Movie("Avengers: Endgame", "Cinema 1", "5:00 PM"),
+    new Movie("Frozen II", "Cinema 2", "7:30 PM"),
+    new Movie("Joker", "Cinema 3", "9:00 PM")
+};
+📄 What to Include in README.txt:
+How to compile and run:
+
+css
+Copy
+Edit
+javac -d bin src/**/*.java
+java -cp bin com.cinebook.Main
+Requirements (Java version, JARs)
+
+Simulation explanation:
+
+Payments just print “Transaction successful.”
+
+Email/SMS just show message dialog.
+
+Admin password is admin123.
