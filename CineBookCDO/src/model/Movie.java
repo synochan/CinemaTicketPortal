@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a movie in the system
@@ -142,8 +143,35 @@ public class Movie {
         this.showtimes.remove(showtime);
     }
     
+    /**
+     * Formats duration as hours and minutes
+     */
+    public String getFormattedDuration() {
+        int hours = durationMinutes / 60;
+        int minutes = durationMinutes % 60;
+        
+        if (hours > 0) {
+            return hours + "h " + minutes + "m";
+        } else {
+            return minutes + "m";
+        }
+    }
+    
     @Override
     public String toString() {
         return title;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

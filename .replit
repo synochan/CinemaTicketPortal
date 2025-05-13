@@ -1,7 +1,8 @@
-modules = ["java", "java-17"]
+modules = ["java", "java-17", "java-11"]
 
 [nix]
 channel = "stable-24_05"
+packages = ["openjdk11", "openjdk8"]
 
 [workflows]
 runButton = "Project"
@@ -19,13 +20,17 @@ args = "JavaCinebookApp"
 task = "workflow.run"
 args = "java_app"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "auth_demo"
+
 [[workflows.workflow]]
 name = "JavaCinebookApp"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "mkdir -p CineBookCDO/bin && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/java -cp CineBookCDO/bin Main"
+args = "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/*.java CineBookCDO/src/*/*.java CineBookCDO/src/*/*/*.java && java -cp CineBookCDO/bin Main"
 
 [[workflows.workflow]]
 name = "java_app"
@@ -35,5 +40,13 @@ author = "agent"
 task = "shell.exec"
 args = "java -cp CineBookCDO/src Main"
 
+[[workflows.workflow]]
+name = "auth_demo"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/model/User.java CineBookCDO/src/controller/AdminController.java CineBookCDO/src/controller/UserController.java CineBookCDO/src/SimpleAuthDemo.java && java -cp CineBookCDO/bin SimpleAuthDemo"
+
 [deployment]
-run = ["sh", "-c", "mkdir -p CineBookCDO/bin && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/javac -d CineBookCDO/bin CineBookCDO/src/**/*.java && /nix/store/gpxl5qgg8kicmcvivwmybwjlpf7wh20l-graalvm17-ce-22.3.0/bin/java -cp CineBookCDO/bin Main"]
+run = ["sh", "-c", "mkdir -p CineBookCDO/bin && javac -d CineBookCDO/bin CineBookCDO/src/*.java CineBookCDO/src/*/*.java CineBookCDO/src/*/*/*.java && java -cp CineBookCDO/bin Main"]

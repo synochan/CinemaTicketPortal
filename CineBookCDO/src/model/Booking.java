@@ -1,170 +1,146 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * Represents a booking in the cinema system
+ * Represents a booking in the system
  */
 public class Booking {
-    private int id;
-    private String username;
+    private String id;
+    private User user;
     private Movie movie;
-    private String cinema;
-    private String showtime;
-    private List<Seat> bookedSeats;
-    private List<Snack> snacks;
+    private LocalDateTime showtime;
+    private List<String> seats;
     private double totalAmount;
-    private String paymentMethod;
     private LocalDateTime bookingTime;
-    private String bookingCode;
-    private static int nextId = 1;
-
-    public Booking(String username, Movie movie, String cinema, String showtime) {
-        this.id = nextId++;
-        this.username = username;
+    private boolean isPaid;
+    private String paymentMethod;
+    
+    public Booking(User user, Movie movie, LocalDateTime showtime, List<String> seats) {
+        this.id = UUID.randomUUID().toString();
+        this.user = user;
         this.movie = movie;
-        this.cinema = cinema;
         this.showtime = showtime;
-        this.bookedSeats = new ArrayList<>();
-        this.snacks = new ArrayList<>();
-        this.totalAmount = 0.0;
+        this.seats = new ArrayList<>(seats);
         this.bookingTime = LocalDateTime.now();
-        this.bookingCode = generateBookingCode();
+        this.isPaid = false;
+        calculateTotalAmount();
     }
-
+    
     /**
-     * Generates a unique booking code
+     * Calculates the total amount for the booking
      */
-    private String generateBookingCode() {
-        // Format: CDO-YYYYMMDD-XXXX where XXXX is the booking ID
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String dateStr = bookingTime.format(formatter);
-        return "CDO-" + dateStr + "-" + String.format("%04d", id);
-    }
-
-    /**
-     * Adds a seat to the booking
-     */
-    public void addSeat(Seat seat) {
-        bookedSeats.add(seat);
-        totalAmount += seat.getPrice();
-    }
-
-    /**
-     * Removes a seat from the booking
-     */
-    public void removeSeat(Seat seat) {
-        if (bookedSeats.remove(seat)) {
-            totalAmount -= seat.getPrice();
+    private void calculateTotalAmount() {
+        double standardSeatPrice = 200.0; // PHP 200
+        double deluxeSeatPrice = 350.0;   // PHP 350
+        
+        double amount = 0;
+        
+        // Calculate price based on seat types
+        for (String seat : seats) {
+            char row = seat.charAt(0);
+            
+            // Rows A-F are standard seats, G-J are deluxe
+            if (row >= 'A' && row <= 'F') {
+                amount += standardSeatPrice;
+            } else if (row >= 'G' && row <= 'J') {
+                amount += deluxeSeatPrice;
+            }
         }
+        
+        this.totalAmount = amount;
     }
-
+    
     /**
-     * Adds a snack to the booking
+     * Processes payment for this booking
      */
-    public void addSnack(Snack snack) {
-        snacks.add(snack);
-        totalAmount += snack.getPrice();
+    public boolean processPayment(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+        this.isPaid = true;
+        return true;
     }
-
-    /**
-     * Removes a snack from the booking
-     */
-    public void removeSnack(Snack snack) {
-        if (snacks.remove(snack)) {
-            totalAmount -= snack.getPrice();
-        }
-    }
-
+    
     // Getters and setters
-    public int getId() {
+    public String getId() {
         return id;
     }
-
-    public String getUsername() {
-        return username;
+    
+    public User getUser() {
+        return user;
     }
-
+    
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     public Movie getMovie() {
         return movie;
     }
-
-    public String getCinema() {
-        return cinema;
+    
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
-
-    public String getShowtime() {
+    
+    public LocalDateTime getShowtime() {
         return showtime;
     }
-
-    public List<Seat> getBookedSeats() {
-        return bookedSeats;
+    
+    public void setShowtime(LocalDateTime showtime) {
+        this.showtime = showtime;
     }
-
-    public List<Snack> getSnacks() {
-        return snacks;
+    
+    public List<String> getSeats() {
+        return seats;
     }
-
+    
+    public void setSeats(List<String> seats) {
+        this.seats = new ArrayList<>(seats);
+        calculateTotalAmount();
+    }
+    
     public double getTotalAmount() {
         return totalAmount;
     }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
+    
     public LocalDateTime getBookingTime() {
         return bookingTime;
     }
-
-    public String getBookingCode() {
-        return bookingCode;
+    
+    public boolean isPaid() {
+        return isPaid;
     }
-
+    
+    public void setPaid(boolean paid) {
+        isPaid = paid;
+    }
+    
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+    
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    
     /**
-     * Gets a formatted summary of the booking
+     * Gets formatted seats as a string (e.g., "A1, A2, B3")
      */
-    public String getBookingSummary() {
-        StringBuilder summary = new StringBuilder();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        
-        summary.append("===== CINEBOOK CDO TICKET =====\n");
-        summary.append("Booking Code: ").append(bookingCode).append("\n");
-        summary.append("Movie: ").append(movie.getTitle()).append("\n");
-        summary.append("Cinema: ").append(cinema).append("\n");
-        summary.append("Showtime: ").append(showtime).append("\n");
-        summary.append("Customer: ").append(username).append("\n");
-        summary.append("Seats: ");
-        
-        for (int i = 0; i < bookedSeats.size(); i++) {
-            summary.append(bookedSeats.get(i).getSeatId());
-            if (i < bookedSeats.size() - 1) {
-                summary.append(", ");
-            }
+    public String getFormattedSeats() {
+        if (seats.isEmpty()) {
+            return "";
         }
-        summary.append("\n");
         
-        if (!snacks.isEmpty()) {
-            summary.append("Snacks:\n");
-            for (Snack snack : snacks) {
-                summary.append("- ").append(snack.getName())
-                      .append(" (₱").append(String.format("%.2f", snack.getPrice())).append(")\n");
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < seats.size(); i++) {
+            builder.append(seats.get(i));
+            if (i < seats.size() - 1) {
+                builder.append(", ");
             }
         }
         
-        summary.append("Total Amount: ₱").append(String.format("%.2f", totalAmount)).append("\n");
-        summary.append("Payment Method: ").append(paymentMethod).append("\n");
-        summary.append("Booking Time: ").append(bookingTime.format(formatter)).append("\n");
-        summary.append("==============================\n");
-        summary.append("QR Code: ").append(bookingCode).append(" [Simulated QR Code]\n");
-        
-        return summary.toString();
+        return builder.toString();
     }
 }

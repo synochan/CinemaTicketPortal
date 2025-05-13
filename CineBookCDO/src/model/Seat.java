@@ -1,64 +1,94 @@
 package model;
 
 /**
- * Represents a seat in a cinema
+ * Represents a cinema seat
  */
 public class Seat {
-    private String seatId; // Example: "A1", "B5", etc.
-    private String type; // "Standard" or "Deluxe"
-    private int row;
+    private String id;      // e.g., "A1", "B2", etc.
+    private char row;
     private int column;
-    private boolean isAvailable;
+    private String type;    // "Standard" or "Deluxe"
     private double price;
-
-    public Seat(String seatId, String type, int row, int column, double price) {
-        this.seatId = seatId;
-        this.type = type;
+    private boolean isAvailable;
+    
+    public Seat(String id, char row, int column) {
+        this.id = id;
         this.row = row;
         this.column = column;
+        
+        // Default values
         this.isAvailable = true;
-        this.price = price;
+        
+        // Determine seat type and price based on row
+        if (row >= 'A' && row <= 'F') {
+            this.type = "Standard";
+            this.price = 200.0; // PHP 200
+        } else {
+            this.type = "Deluxe";
+            this.price = 350.0; // PHP 350
+        }
     }
-
-    // Getters and setters
-    public String getSeatId() {
-        return seatId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
+    
+    public Seat(String id, char row, int column, String type, double price) {
+        this.id = id;
+        this.row = row;
+        this.column = column;
         this.type = type;
+        this.price = price;
+        this.isAvailable = true;
     }
-
-    public int getRow() {
+    
+    // Getters and setters
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public char getRow() {
         return row;
     }
-
+    
+    public void setRow(char row) {
+        this.row = row;
+    }
+    
     public int getColumn() {
         return column;
     }
-
-    public boolean isAvailable() {
-        return isAvailable;
+    
+    public void setColumn(int column) {
+        this.column = column;
     }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
+    
+    public String getType() {
+        return type;
     }
-
+    
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     public double getPrice() {
         return price;
     }
-
+    
     public void setPrice(double price) {
         this.price = price;
     }
-
+    
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+    
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+    
     @Override
     public String toString() {
-        return seatId + " (" + type + ")";
+        return id;
     }
 }

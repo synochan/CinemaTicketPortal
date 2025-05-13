@@ -1,9 +1,10 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
- * Represents a user in the system
+ * Represents a user in the system with authentication capabilities
  */
 public class User {
     private String username;
@@ -129,5 +130,18 @@ public class User {
     @Override
     public String toString() {
         return username;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }

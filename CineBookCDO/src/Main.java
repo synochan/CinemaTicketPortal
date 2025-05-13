@@ -7,6 +7,8 @@ import javax.swing.*;
  */
 public class Main {
     public static void main(String[] args) {
+        System.out.println("Starting CineBook CDO Application...");
+        
         // Set look and feel to system default
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -18,8 +20,13 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MainFrame();
-                System.out.println("CineBook CDO application started successfully!");
+                try {
+                    new MainFrame();
+                    System.out.println("CineBook CDO application started successfully!");
+                } catch (Exception e) {
+                    System.err.println("Error starting application: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         });
     }
